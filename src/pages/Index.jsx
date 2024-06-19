@@ -1,6 +1,5 @@
-import { Box, Container, VStack, Text, Heading, Image, Flex } from "@chakra-ui/react";
+import { Box, Container, VStack, Text, Heading, Image, Flex, Button } from "@chakra-ui/react";
 import PhotoUpload from '../components/PhotoUpload';
-
 import { useState } from 'react';
 
 const Index = () => {
@@ -9,10 +8,20 @@ const Index = () => {
   const handleUpload = (acceptedFiles) => {
     const newPhotos = acceptedFiles.map(file => ({
       url: URL.createObjectURL(file),
-      description: 'Newly uploaded photo'
+      description: 'Newly uploaded photo',
+      likes: 0
     }));
     setPhotos(prevPhotos => [...prevPhotos, ...newPhotos]);
   };
+
+  const handleLike = (index) => {
+    setPhotos(prevPhotos => {
+      const updatedPhotos = [...prevPhotos];
+      updatedPhotos[index].likes += 1;
+      return updatedPhotos;
+    });
+  };
+
   return (
     <Container maxW="container.xl" p={0}>
       <VStack spacing={0} align="stretch">
@@ -32,6 +41,10 @@ const Index = () => {
                 <Image src={photo.url} alt={`Uploaded photo ${index + 1}`} />
                 <Box p={4}>
                   <Text fontSize="md">{photo.description}</Text>
+                  <Flex align="center" mt={2}>
+                    <Button onClick={() => handleLike(index)} colorScheme="blue" size="sm" mr={2}>Like</Button>
+                    <Text>{photo.likes} {photo.likes === 1 ? 'like' : 'likes'}</Text>
+                  </Flex>
                 </Box>
               </Box>
             ))}
